@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_92180_ado.WorkItem</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>WorkItem</name>
+        <script><![CDATA[var WorkItem = Class.create();
+WorkItem.prototype = {
+    initialize: function() {
+        this.setAreaPath();
+        this.setIterationPath();
+        this.setTag();
+        this.context = "x_92180_ado.WorkItem";
+        this.setOrganization();
+        this.setProject();
+
+    },
+
+    setOrganization: function() {
+        this.organization = gs.getProperty('x_92180_ado.organization');
+    },
+
+    setProject: function() {
+        this.project = gs.getProperty('x_92180_ado.project');
+    },
+
+    setAreaPath: function() {
+        this.areaPath = "obo";
+    },
+
+    setIterationPath: function() {
+        this.iterationPath = "obo";
+    },
+
+    setTag: function() {
+        this.tag = "";
+    },
+
+    createWI: function(workItemType, current) {},
+
+    create: function(workItemType, title, description, sys_id) {
+        var accessTokenObj = new x_92180_azure.AccessToken();
+        var access_token = accessTokenObj.getAccessTokenAction();
+
+        // If we did not get an access token just return null
+        if (!global.JSUtil.notNil(access_token)) {
+            // Nice to read this using reflection
+            gs.error(this.context + " - " + "No access token recevied");
+            return null;
+        }
+
+        try {
+            var request = new sn_ws.RESTMessageV2('Microsoft DevOps Services', 'Create WorkIem');
+            workItemType = encodeURIComponent(workItemType);
+
+            // Setting organization url parameter
+            request.setStringParameter("organization", this.organization);
+
+            // Setting project url parameter
+            request.setStringParameter("project", this.project);
+
+            // Setting workItemType url parameter
+            request.setStringParameter("type", workItemType);
+
+            // Setting Bearer Token
+            request.setStringParameter("access_token", access_token);
+
+            // Get Request Body for WorkItem
+            var contents = this._buildContent(workItemType, title, description, sys_id);
+
+            request.setRequestBody(global.JSON.stringify(contents));
+            var response = request.execute();
+            if (response.getStatusCode() != 200) {
+                gs.error("Azure DevOps status code" + response.getStatusCode());
+            }
+            var responseBody = response.haveError() ? response.getErrorMessage() : response.getBody();
+        } catch (ex) {
+            responseBody = ex.getMessage();
+            status = '500';
+            gs.error("Azure error in calling create Workitem " + responseBody);
+        } finally {
+            requestBody = request ? request.getRequestBody() : null;
+        }
+        return responseBody;
+    },
+
+    _buildContent: function(workItemType, title, description, sys_id) {
+        // Building Request body based on WorkItem type
+        // Bug content has one specific property
+        var contents = this._buildContentStory(title, description, sys_id);
+        if (workItemType == "Bug") {
+            bugContents = this._buildContentBug(title, description, sys_id);
+            contents.push(bugContents);
+        }
+        return contents;
+    },
+
+    _buildContentBug: function(title, description, sys_id) {
+        var contents = {
+            "op": "add",
+            "path": "/fields/Microsoft.VSTS.TCM.ReproSteps",
+            "from": null,
+            "value": description.toString()
+        };
+        return contents;
+    },
+    _buildContentStory: function(title, description, sys_id) {
+        var contents = [{
+                "op": "add",
+                "path": "/fields/System.AreaPath",
+                "from": null,
+                "value": this.areaPath
+            },
+            {
+                "op": "add",
+                "path": "/fields/System.IterationPath",
+                "from": null,
+                "value": this.iterationPath
+            },
+            {
+                "op": "add",
+                "path": "/fields/System.Title",
+                "from": null,
+                "value": title.toString()
+            },
+            {
+                "op": "add",
+                "path": "/fields/Microsoft.VSTS.Common.Priority",
+                "from": null,
+                "value": "1"
+            },
+            {
+                "op": "add",
+                "path": "/fields/System.Description",
+                "from": null,
+                "value": description.toString()
+            },
+            {
+                "op": "add",
+                "path": "/fields/System.Tags",
+                "from": null,
+                "value": this.tag
+            },
+            {
+                "op": "add",
+                "path": "/relations/-",
+                "value": {
+                    "rel": "Hyperlink",
+                    "url": 'https://' + gs.getProperty('instance_name') + '.service-now.com/incident.do?sys_id=' + sys_id.toString(),
+                    "attributes": {
+                        "comment": "Hyperlink to the ServiceNow incident"
+                    }
+                }
+            }
+        ];
+        return contents;
+    },
+    type: 'WorkItem'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
+        <sys_created_on>2024-03-20 14:29:32</sys_created_on>
+        <sys_id>1429d93d934542d0487c72cdfaba10e2</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>WorkItem</sys_name>
+        <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
+        <sys_update_name>sys_script_include_1429d93d934542d0487c72cdfaba10e2</sys_update_name>
+        <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
+        <sys_updated_on>2024-03-20 14:42:10</sys_updated_on>
+    </sys_script_include>
+</record_update>

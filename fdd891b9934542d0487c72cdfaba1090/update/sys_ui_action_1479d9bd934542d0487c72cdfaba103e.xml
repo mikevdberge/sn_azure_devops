@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name/>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2><![CDATA[function onClick(g_form) {
+
+}]]></client_script_v2>
+        <comments/>
+        <condition>current.global.incident_state != IncidentState.CLOSED &amp;&amp; gs.hasRole("itil")  </condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style/>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint/>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Create User Story</name>
+        <onclick/>
+        <order>100</order>
+        <script><![CDATA[var workItem = new x_92180_ado.WorkItem();
+
+var workItemType = "User Story";
+var resultWorkNote = "";
+var sys_id = current.sys_id;
+var short_description = current.short_description;
+var description = current.description;
+
+workItem = workItem.create(workItemType,short_description, description, sys_id);
+gs.info("Azure UI Action response body: "+workItem);
+if (!global.JSUtil.notNil(workItem)) {
+	resultWorkNote = "Error creating Azure "+workItemType;
+	gs.addErrorMessage(resultWorkNote);
+} else {
+	resultWorkNote = "Azure " +workItemType + " " + JSON.parse(workItem).id + " created";
+	gs.addInfoMessage(resultWorkNote);
+}
+
+current.work_notes = resultWorkNote+ " with url: "+JSON.parse(workItem)._links.html.href;
+current.update();
+action.setRedirectURL(current);]]></script>
+        <show_insert>false</show_insert>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
+        <sys_created_on>2024-03-20 14:31:11</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>1479d9bd934542d0487c72cdfaba103e</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Create User Story</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
+        <sys_update_name>sys_ui_action_1479d9bd934542d0487c72cdfaba103e</sys_update_name>
+        <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
+        <sys_updated_on>2024-03-20 14:36:51</sys_updated_on>
+        <table>incident</table>
+        <ui11_compatible>true</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

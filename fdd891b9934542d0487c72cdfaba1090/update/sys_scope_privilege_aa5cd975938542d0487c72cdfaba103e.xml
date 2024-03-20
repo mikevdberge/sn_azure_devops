@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_scope_privilege">
+    <sys_scope_privilege action="INSERT_OR_UPDATE">
+        <operation>execute</operation>
+        <source_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</source_scope>
+        <status>allowed</status>
+        <sys_class_name>sys_scope_privilege</sys_class_name>
+        <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
+        <sys_created_on>2024-03-20 14:43:19</sys_created_on>
+        <sys_id>aa5cd975938542d0487c72cdfaba103e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>AccessToken</sys_name>
+        <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
+        <sys_update_name>sys_scope_privilege_aa5cd975938542d0487c72cdfaba103e</sys_update_name>
+        <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
+        <sys_updated_on>2024-03-20 14:43:19</sys_updated_on>
+        <target_name>AccessToken</target_name>
+        <target_scope display_value="Azure">6bd0cfbd93fc0a10487c72cdfaba10bd</target_scope>
+        <target_type>sys_script_include</target_type>
+    </sys_scope_privilege>
+</record_update>
