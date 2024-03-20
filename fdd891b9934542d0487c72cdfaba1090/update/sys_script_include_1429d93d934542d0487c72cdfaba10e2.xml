@@ -5,7 +5,7 @@
         <api_name>x_92180_ado.WorkItem</api_name>
         <caller_access/>
         <client_callable>false</client_callable>
-        <description/>
+        <description>Create WorkItems in Azure DevOps like Bugs or User Stories</description>
         <name>WorkItem</name>
         <script><![CDATA[var WorkItem = Class.create();
 WorkItem.prototype = {
@@ -164,13 +164,13 @@ WorkItem.prototype = {
         <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
         <sys_created_on>2024-03-20 14:29:32</sys_created_on>
         <sys_id>1429d93d934542d0487c72cdfaba10e2</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>WorkItem</sys_name>
         <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
         <sys_update_name>sys_script_include_1429d93d934542d0487c72cdfaba10e2</sys_update_name>
         <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
-        <sys_updated_on>2024-03-20 14:42:10</sys_updated_on>
+        <sys_updated_on>2024-03-20 15:32:16</sys_updated_on>
     </sys_script_include>
 </record_update>
