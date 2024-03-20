@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
     <sys_script_include action="INSERT_OR_UPDATE">
-        <access>package_private</access>
+        <access>public</access>
         <active>true</active>
         <api_name>x_92180_ado.WorkItem</api_name>
         <caller_access/>
@@ -16,30 +16,81 @@ WorkItem.prototype = {
         this.context = "x_92180_ado.WorkItem";
         this.setOrganization();
         this.setProject();
+		this.setApiVersion();
 
     },
 
+	setApiVersion: function(){
+		this.apiVersion = gs.getProperty('x_92180_ado.api_version');
+	},
     setOrganization: function() {
         this.organization = gs.getProperty('x_92180_ado.organization');
     },
-
     setProject: function() {
         this.project = gs.getProperty('x_92180_ado.project');
     },
-
     setAreaPath: function() {
         this.areaPath = "obo";
     },
-
     setIterationPath: function() {
         this.iterationPath = "obo";
     },
-
     setTag: function() {
         this.tag = "";
     },
 
+    _getAccessToken: function() {
+        var accessTokenObj = new x_92180_azure.AccessToken();
+        var access_token = accessTokenObj.getAccessTokenAction();
+
+        // If we did not get an access token just return null
+        if (!global.JSUtil.notNil(access_token)) {
+            // Nice to read this using reflection
+            gs.error(this.context + " - " + "No access token recevied");
+            return null;
+        }
+        return access_token;
+    },
+
     createWI: function(workItemType, current) {},
+
+    createAction: function(workItemType, title, description, sys_id) {
+
+        try {
+            var inputs = {};
+            var access_token = this._getAccessToken();
+
+            workItemType = encodeURIComponent(workItemType);
+            // Get Request Body for WorkItem
+            var contents = this._buildContent(workItemType, title, description, sys_id);
+
+            inputs['access_token'] = access_token; // String 
+            inputs['organization'] = this.organization; // String 
+            inputs['project'] = this.project; // String 
+            inputs['type'] = workItemType; // String 
+            inputs['api_version'] = this.apiVersion; // String 
+            inputs['workitem_content'] = global.JSON.stringify(contents); // String 
+
+            // Start Asynchronously: Uncomment to run in background. Code snippet will not have access to outputs.
+            // sn_fd.FlowAPI.getRunner().action('x_92180_ado.azure_devops_create_workiem').inBackground().withInputs(inputs).run();
+
+            // Execute Synchronously: Run in foreground. Code snippet has access to outputs.
+            var result = sn_fd.FlowAPI.getRunner().action('x_92180_ado.azure_devops_create_workiem').inForeground().withInputs(inputs).run();
+            var outputs = result.getOutputs();
+
+            // Get Outputs:
+            // Note: outputs can only be retrieved when executing synchronously.
+            var responsebody = outputs['responsebody']; // String
+
+        } catch (ex) {
+            var message = ex.getMessage();
+            gs.error(message);
+            return nil;
+        }
+
+        return responsebody;
+
+    },
 
     create: function(workItemType, title, description, sys_id) {
         var accessTokenObj = new x_92180_azure.AccessToken();
@@ -164,13 +215,13 @@ WorkItem.prototype = {
         <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
         <sys_created_on>2024-03-20 14:29:32</sys_created_on>
         <sys_id>1429d93d934542d0487c72cdfaba10e2</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_mod_count>8</sys_mod_count>
         <sys_name>WorkItem</sys_name>
         <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
         <sys_update_name>sys_script_include_1429d93d934542d0487c72cdfaba10e2</sys_update_name>
         <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
-        <sys_updated_on>2024-03-20 15:32:16</sys_updated_on>
+        <sys_updated_on>2024-03-20 16:33:04</sys_updated_on>
     </sys_script_include>
 </record_update>
