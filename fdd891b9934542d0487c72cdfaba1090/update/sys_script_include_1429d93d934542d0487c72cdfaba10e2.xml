@@ -16,13 +16,13 @@ WorkItem.prototype = {
         this.context = "x_92180_ado.WorkItem";
         this.setOrganization();
         this.setProject();
-		this.setApiVersion();
+        this.setApiVersion();
 
     },
 
-	setApiVersion: function(){
-		this.apiVersion = gs.getProperty('x_92180_ado.api_version');
-	},
+    setApiVersion: function() {
+        this.apiVersion = gs.getProperty('x_92180_ado.api_version');
+    },
     setOrganization: function() {
         this.organization = gs.getProperty('x_92180_ado.organization');
     },
@@ -40,8 +40,8 @@ WorkItem.prototype = {
     },
 
     _getAccessToken: function() {
-        var accessTokenObj = new x_92180_azure.AccessToken();
-        var access_token = accessTokenObj.getAccessTokenAction();
+        var accessTokenObj = new x_92180_entra_id.OAuth();
+        var access_token = accessTokenObj.getOBOAccessToken();
 
         // If we did not get an access token just return null
         if (!global.JSUtil.notNil(access_token)) {
@@ -52,13 +52,29 @@ WorkItem.prototype = {
         return access_token;
     },
 
+    _getFederatedAccessToken: function() {
+        var accessTokenObj = new x_92180_entra_id.OAuth();
+        var access_token = accessTokenObj.getFederatedAccessToken();
+
+        // If we did not get an access token just return null
+        if (!global.JSUtil.notNil(access_token)) {
+            // Nice to read this using reflection
+            gs.error(this.context + " - " + "No access token recevied");
+            return null;
+        }
+        return access_token;
+    },
     createWI: function(workItemType, current) {},
 
     createAction: function(workItemType, title, description, sys_id) {
 
         try {
             var inputs = {};
-            var access_token = this._getAccessToken();
+            if (workItemType == 'Bug') {
+                access_token = this._getAccessToken();
+            } else {
+                access_token = this._getFederatedAccessToken();
+            }
 
             workItemType = encodeURIComponent(workItemType);
             // Get Request Body for WorkItem
@@ -215,13 +231,13 @@ WorkItem.prototype = {
         <sys_created_by>mikevdberge@qhse-professionals.nl</sys_created_by>
         <sys_created_on>2024-03-20 14:29:32</sys_created_on>
         <sys_id>1429d93d934542d0487c72cdfaba10e2</sys_id>
-        <sys_mod_count>8</sys_mod_count>
+        <sys_mod_count>13</sys_mod_count>
         <sys_name>WorkItem</sys_name>
         <sys_package display_value="Azure DevOps" source="x_92180_ado">fdd891b9934542d0487c72cdfaba1090</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="Azure DevOps">fdd891b9934542d0487c72cdfaba1090</sys_scope>
         <sys_update_name>sys_script_include_1429d93d934542d0487c72cdfaba10e2</sys_update_name>
         <sys_updated_by>mikevdberge@qhse-professionals.nl</sys_updated_by>
-        <sys_updated_on>2024-03-20 16:33:04</sys_updated_on>
+        <sys_updated_on>2024-04-02 07:37:59</sys_updated_on>
     </sys_script_include>
 </record_update>
